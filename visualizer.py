@@ -44,12 +44,13 @@ class Graph:
             return
         delta_angle = 2 * math.pi / len(node.childs)
         for child in node.childs:
-            next_pos = (pos[0] + math.sin(angle), pos[1] + math.cos(angle))
-            print("angle = ", angle)
-            print("math.sin(angle) = ", math.sin(angle))
-            self.traverse_and_set_points(child, next_pos, radius * 0.8)
+            next_pos = (pos[0] + radius * math.sin(angle),
+                        pos[1] + radius * math.cos(angle))
+            self.traverse_and_set_points(child, next_pos, radius * 0.5)
             angle = angle + delta_angle
 
+    # TODO: get lines older current date
+    # TODO: if have modifications on this date => color this node
     def get_graph_lines(self):
         lines = []
         c = []
@@ -65,7 +66,7 @@ class Graph:
 #------------------------------------------------------------
 
 # set up initial state and global variables
-dt = 1./30 # 30 fps
+dt = 1./2 # 2 fps
 
 # set up figure and animation
 fig = plt.figure()
@@ -73,7 +74,6 @@ ax = fig.add_subplot(111, aspect='equal', autoscale_on=False,
                      xlim=(0, 10), ylim=(0, 10))
 ax.grid()
 
-line, = ax.plot([], [], 'o-', lw=2)
 time_text = ax.text(0.02, 0.95, '', transform=ax.transAxes)
 energy_text = ax.text(0.02, 0.90, '', transform=ax.transAxes)
 
@@ -103,10 +103,9 @@ class Visualizer:
 
     def init(self):
         """initialize animation"""
-        line.set_data([], [])
         time_text.set_text('')
         energy_text.set_text('')
-        return line, time_text, energy_text
+        return time_text, energy_text
 
     def animate(self, i):
         """perform animation step"""
@@ -116,5 +115,5 @@ class Visualizer:
         # TODO: change dynamic, not add?
         ax.add_collection(self.graph.get_lines())
         time_text.set_text('time = %.1f' % self.graph.time_elapsed)
-        return line, time_text, energy_text
+        return time_text, energy_text
 
